@@ -8,7 +8,9 @@ function useThrottle(state, callback, delay) {
   useEffect(() => {
     if (isFirst.current) {
       isFirst.current = false;
-    } else if (!timer.current) {
+    } else if (timer.current) {
+      trailingCallback.current = callback.bind(this, state);
+    } else {
       callback(state);
       timer.current = setTimeout(() => {
         timer.current = null;
@@ -17,8 +19,6 @@ function useThrottle(state, callback, delay) {
         }
         trailingCallback.current = null;
       }, delay);
-    } else {
-      trailingCallback.current = callback.bind(this, state);
     }
   }, [state]);
 }
